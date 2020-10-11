@@ -1,0 +1,32 @@
+reset
+set term pngcairo size 840,1280
+set output 'FX_baseline_residuals.png'
+set xrange [0:9000]
+set grid
+set multiplot layout 6,1
+set title 'ATA FX corr baseline residuals (unwrapped fringe phase), baseline 1H-4G'
+set ylabel 'Delay (m)'
+set auto y
+set key right bottom
+set bmargin 0
+myBmargin = 0.024
+myPlotHeight = 0.99/6.
+set lmargin 10
+set format x ""
+set size 1, myPlotHeight
+set origin 0, myBmargin + myPlotHeight * 5
+plot 'baseline-phase-residuals' u 0:1 index 0 title 'CasA 2020-10-04 22:58:02' w l lc 1
+unset title
+set origin 0, myBmargin + myPlotHeight * 4
+plot 'baseline-phase-residuals' u 0:1 index 1 title 'VirA 2020-10-04 22:24:51' w l lc 2
+set origin 0, myBmargin + myPlotHeight * 3
+plot 'baseline-phase-residuals' u 0:1 index 2 title 'CasA 2020-10-10 07:12:16' w l lc 3
+set origin 0, myBmargin + myPlotHeight * 2
+plot 'baseline-phase-residuals' u 0:1 index 3 title 'CasA 2020-10-10 08:59:15' w l lc 4
+set origin 0, myBmargin + myPlotHeight * 1
+plot 'baseline-phase-residuals' u 0:1 index 4 title 'CasA 2020-10-10 12:02:08' w l lc 7
+set xlabel 'Time (s)'
+set format x "%g"
+set origin 0, myBmargin + myPlotHeight * 0
+plot 'baseline-phase-residuals' u 0:1 index 5 title 'CasA 2020-10-10 12:36:16' w l lc 6
+unset multiplot
