@@ -66,8 +66,6 @@ ant1h = EarthLocation.from_geodetic(lat = 40.816410 * u.deg, lon = -121.471831 *
 ant4g = EarthLocation.from_geodetic(lat = (40.818315 + 0.0000057) * u.deg, lon = (-121.470432 - 0.0000025) * u.deg, height = 986 * u.m)
 baseline = EarthLocation(ant1h.x - ant4g.x, ant1h.y - ant4g.y, ant1h.z - ant4g.z)
 
-print(baseline)
-asdlfasdlfjk
 # List of observed sources, so we hit the lookup only once
 CasA = SkyCoord.from_name('Cas A')
 VirA = SkyCoord.from_name('Vir A')
