@@ -1,6 +1,6 @@
 reset
 set term pngcairo size 840,1280
-set output 'FX_baseline_residuals.png'
+set output 'FX_baseline_phase_residuals.png'
 set xrange [0:9000]
 set grid
 set multiplot layout 6,1
