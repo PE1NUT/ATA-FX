@@ -1,10 +1,10 @@
 options:
   parameters:
-    author: paul
+    author: Paul Boven
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
-    copyright: ''
+    copyright: GPLv3
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
@@ -21,13 +21,13 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Not titled yet
+    title: ATA FX Correlator
     window_size: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [8, 4.0]
     rotation: 0
     state: enabled
 
@@ -36,40 +36,128 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '256'
+    value: '512'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 20.0]
+    coordinate: [1160, 4.0]
     rotation: 0
     state: enabled
+- name: delay
+  id: variable
+  parameters:
+    comment: 'Baseline delay, in seconds.
+
+      Gets updated by XMLRPC messages'
+    value: 9e-7
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [600, 68.0]
+    rotation: 0
+    state: true
+- name: delay_constant
+  id: variable
+  parameters:
+    comment: 'Additional delay on both channels,
+
+      so delay never goes negative.'
+    value: 9e-7 + 14e-7
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [968, 4.0]
+    rotation: 0
+    state: true
+- name: f_obs
+  id: variable
+  parameters:
+    comment: Sky Frrequency, in Hz
+    value: 1350e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1232, 4.0]
+    rotation: 0
+    state: true
+- name: fractional_delay
+  id: variable
+  parameters:
+    comment: ''
+    value: np.exp(-1j*np.linspace(-np.pi, np.pi, chans, endpoint = False) * (samp_rate
+      * (delay + delay_constant) - np.floor(samp_rate * (delay + delay_constant) +
+      0.5)))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [712, 4.0]
+    rotation: 0
+    state: enabled
+- name: integer_delay
+  id: variable
+  parameters:
+    comment: ''
+    value: int(np.floor(samp_rate*(delay+delay_constant)+0.5))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [864, 4.0]
+    rotation: 0
+    state: true
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: 10e6
+    value: 50e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
+    coordinate: [1072, 4.0]
     rotation: 0
     state: enabled
-- name: blocks_complex_to_float_0_0
-  id: blocks_complex_to_float
+- name: blocks_delay_0
+  id: blocks_delay
   parameters:
     affinity: ''
     alias: ''
-    comment: ''
+    comment: Integer Delay
+    delay: integer_delay
     maxoutbuf: '0'
     minoutbuf: '0'
-    vlen: chans
+    num_ports: '1'
+    type: complex
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1296, 392.0]
+    coordinate: [272, 228.0]
+    rotation: 0
+    state: true
+- name: blocks_delay_1
+  id: blocks_delay
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Fixed Delay
+    delay: int(delay_constant * samp_rate)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 340.0]
     rotation: 0
     state: true
 - name: blocks_file_sink_0
@@ -79,24 +167,25 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: '''CasA-fringe-256bins-IQ-float''+timestamp'
-    type: float
+    file: '''CasA-''+str(int(samp_rate/1e5)/10)+''MSps-fringe-''+str(chans)+''bins-IQ-float
+      ''+timestamp'
+    type: complex
     unbuffered: 'False'
     vlen: chans
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1640, 532.0]
+    coordinate: [1368, 244.0]
     rotation: 0
-    state: true
-- name: blocks_integrate_xx_0
+    state: enabled
+- name: blocks_integrate_xx_0_0
   id: blocks_integrate_xx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    decim: '1000'
+    decim: int(samp_rate/10000)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -105,29 +194,10 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [912, 396.0]
+    coordinate: [1192, 316.0]
     rotation: 0
     state: true
-- name: blocks_interleave_0
-  id: blocks_interleave
-  parameters:
-    affinity: ''
-    alias: ''
-    blocksize: '1'
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_streams: '2'
-    type: float
-    vlen: chans
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1464, 392.0]
-    rotation: 0
-    state: true
-- name: blocks_multiply_conjugate_cc_0
+- name: blocks_multiply_conjugate_cc_0_0
   id: blocks_multiply_conjugate_cc
   parameters:
     affinity: ''
@@ -140,9 +210,30 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 392.0]
+    coordinate: [1016, 312.0]
     rotation: 0
     state: true
+- name: blocks_multiply_const_vxx_0_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: 'Fringe Rotation and
+
+      Fractional Delay'
+    const: '[np.exp(1j*-2*np.pi*(f_obs * delay - np.floor(f_obs*delay + 0.5)))]*chans
+      * fractional_delay'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 220.0]
+    rotation: 0
+    state: enabled
 - name: blocks_stream_to_vector_0
   id: blocks_stream_to_vector
   parameters:
@@ -158,7 +249,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [304, 352.0]
+    coordinate: [400, 232.0]
     rotation: 0
     state: true
 - name: blocks_stream_to_vector_0_0
@@ -176,7 +267,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [304, 472.0]
+    coordinate: [400, 344.0]
     rotation: 0
     state: true
 - name: fc
@@ -188,12 +279,12 @@ blocks:
     label: carrier frequency
     short_id: c
     type: eng_float
-    value: 629e6
+    value: 512e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 12.0]
+    coordinate: [160, 4.0]
     rotation: 0
     state: enabled
 - name: fft_vxx_0
@@ -214,7 +305,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [472, 316.0]
+    coordinate: [576, 196.0]
     rotation: 0
     state: true
 - name: fft_vxx_0_0
@@ -235,28 +326,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [472, 436.0]
-    rotation: 0
-    state: true
-- name: fft_vxx_1
-  id: fft_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    fft_size: chans
-    forward: 'False'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    nthreads: '1'
-    shift: 'True'
-    type: complex
-    window: '[1.0,]*chans'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1072, 372.0]
+    coordinate: [576, 308.0]
     rotation: 0
     state: true
 - name: gaindB
@@ -273,7 +343,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 20.0]
+    coordinate: [296, 4.0]
     rotation: 0
     state: enabled
 - name: import_0
@@ -286,9 +356,47 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [912, 28.0]
+    coordinate: [432, 84.0]
     rotation: 0
     state: true
+- name: import_1
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy as np
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1320, 4.0]
+    rotation: 0
+    state: true
+- name: snippet_0
+  id: snippet
+  parameters:
+    alias: ''
+    code: 'self.uhd_usrp_source.set_lo_export_enabled(True, "lo1", 0)
+
+      self.uhd_usrp_source.set_rx_lo_dist(True, "LO_OUT_0")
+
+      self.uhd_usrp_source.set_rx_lo_dist(True, "LO_OUT_1")
+
+      self.uhd_usrp_source.set_lo_source("external", "lo1", 0)
+
+      self.uhd_usrp_source.set_lo_source("external", "lo1", 1)'
+    comment: 'Snippet to enable LO export
+
+      on the N320/N321'
+    priority: '0'
+    section: main_after_init
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1392, 4.0]
+    rotation: 0
+    state: enabled
 - name: timestamp
   id: parameter
   parameters:
@@ -303,7 +411,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 28.0]
+    coordinate: [432, 4.0]
     rotation: 0
     state: true
 - name: uhd_usrp_source
@@ -674,9 +782,23 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [40, 252.0]
+    coordinate: [8, 132.0]
     rotation: 0
     state: enabled
+- name: xmlrpc_server_0
+  id: xmlrpc_server
+  parameters:
+    addr: localhost
+    alias: ''
+    comment: ''
+    port: '8080'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [600, 4.0]
+    rotation: 0
+    state: true
 - name: zeromq_pub_sink_0
   id: zeromq_pub_sink
   parameters:
@@ -687,30 +809,29 @@ blocks:
     hwm: '-1'
     pass_tags: 'False'
     timeout: '100'
-    type: float
+    type: complex
     vlen: chans
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1640, 380.0]
+    coordinate: [1368, 348.0]
     rotation: 0
     state: enabled
 
 connections:
-- [blocks_complex_to_float_0_0, '0', blocks_interleave_0, '0']
-- [blocks_complex_to_float_0_0, '1', blocks_interleave_0, '1']
-- [blocks_integrate_xx_0, '0', fft_vxx_1, '0']
-- [blocks_interleave_0, '0', blocks_file_sink_0, '0']
-- [blocks_interleave_0, '0', zeromq_pub_sink_0, '0']
-- [blocks_multiply_conjugate_cc_0, '0', blocks_integrate_xx_0, '0']
+- [blocks_delay_0, '0', blocks_stream_to_vector_0, '0']
+- [blocks_delay_1, '0', blocks_stream_to_vector_0_0, '0']
+- [blocks_integrate_xx_0_0, '0', blocks_file_sink_0, '0']
+- [blocks_integrate_xx_0_0, '0', zeromq_pub_sink_0, '0']
+- [blocks_multiply_conjugate_cc_0_0, '0', blocks_integrate_xx_0_0, '0']
+- [blocks_multiply_const_vxx_0_0, '0', blocks_multiply_conjugate_cc_0_0, '0']
 - [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
 - [blocks_stream_to_vector_0_0, '0', fft_vxx_0_0, '0']
-- [fft_vxx_0, '0', blocks_multiply_conjugate_cc_0, '0']
-- [fft_vxx_0_0, '0', blocks_multiply_conjugate_cc_0, '1']
-- [fft_vxx_1, '0', blocks_complex_to_float_0_0, '0']
-- [uhd_usrp_source, '0', blocks_stream_to_vector_0, '0']
-- [uhd_usrp_source, '1', blocks_stream_to_vector_0_0, '0']
+- [fft_vxx_0, '0', blocks_multiply_const_vxx_0_0, '0']
+- [fft_vxx_0_0, '0', blocks_multiply_conjugate_cc_0_0, '1']
+- [uhd_usrp_source, '0', blocks_delay_0, '0']
+- [uhd_usrp_source, '1', blocks_delay_1, '0']
 
 metadata:
   file_format: 1

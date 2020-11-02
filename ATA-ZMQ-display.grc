@@ -1,16 +1,16 @@
 options:
   parameters:
-    author: paul
+    author: Paul Boven
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
-    copyright: ''
-    description: ''
+    copyright: GPLv3
+    description: https://github.com/PE1NUT/ATA-FX
     gen_cmake: 'On'
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: default_is_fine
+    id: ATA_ZMQ_display
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -21,13 +21,13 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Not titled yet
+    title: ATA-FX Real Time Fringe Display
     window_size: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [8, 12.0]
     rotation: 0
     state: enabled
 
@@ -36,49 +36,130 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '256'
+    value: '512'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [320, 20.0]
+    coordinate: [304, 76.0]
     rotation: 0
     state: enabled
-- name: blocks_deinterleave_0
+- name: frac_delay
+  id: variable
+  parameters:
+    comment: ''
+    value: np.exp(1j* (phase + np.linspace(-np.pi, np.pi, chans, endpoint = False)
+      * phase_slope))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [584, 12.0]
+    rotation: 0
+    state: enabled
+- name: integration
+  id: variable
+  parameters:
+    comment: ''
+    value: '500'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 12.0]
+    rotation: 0
+    state: enabled
+- name: phase
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '-4'
+    step: '0.01'
+    stop: '4'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [488, 12.0]
+    rotation: 0
+    state: true
+- name: phase_slope
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '-20'
+    step: '0.01'
+    stop: '20'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 12.0]
+    rotation: 0
+    state: true
+- name: blocks_complex_to_arg_0_0
+  id: blocks_complex_to_arg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [632, 404.0]
+    rotation: 0
+    state: true
+- name: blocks_complex_to_mag_0
+  id: blocks_complex_to_mag
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [992, 148.0]
+    rotation: 0
+    state: true
+- name: blocks_deinterleave_1
   id: blocks_deinterleave
   parameters:
     affinity: ''
     alias: ''
-    blocksize: '1'
-    comment: ''
+    blocksize: int(chans/2)
+    comment: FFTshift
     maxoutbuf: '0'
     minoutbuf: '0'
     num_streams: '2'
     type: float
-    vlen: chans
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 256.0]
-    rotation: 0
-    state: true
-- name: blocks_integrate_xx_0
-  id: blocks_integrate_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    decim: '4'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: chans
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [472, 292.0]
+    coordinate: [1296, 136.0]
     rotation: 0
     state: true
 - name: blocks_integrate_xx_0_0
@@ -87,42 +168,118 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    decim: '4'
+    decim: integration
     maxoutbuf: '0'
     minoutbuf: '0'
-    type: float
+    type: complex
     vlen: chans
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [472, 224.0]
+    coordinate: [632, 180.0]
+    rotation: 0
+    state: enabled
+- name: blocks_integrate_xx_0_0_0_0_0
+  id: blocks_integrate_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: integration
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 396.0]
+    rotation: 0
+    state: enabled
+- name: blocks_interleave_0
+  id: blocks_interleave
+  parameters:
+    affinity: ''
+    alias: ''
+    blocksize: int(chans/2)
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1472, 136.0]
     rotation: 0
     state: true
+- name: blocks_keep_m_in_n_0
+  id: blocks_keep_m_in_n
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Zoom in on fringe location
+    m: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: chans
+    offset: int(chans/2)-32
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1592, 132.0]
+    rotation: 0
+    state: true
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: 'Phase and Delay
+
+      Correction'
+    const: frac_delay
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 284.0]
+    rotation: 0
+    state: enabled
 - name: blocks_repeat_0
   id: blocks_repeat
   parameters:
     affinity: ''
     alias: ''
-    comment: ''
+    comment: To improve latency
     interp: '40'
     maxoutbuf: '0'
     minoutbuf: '0'
-    type: float
+    type: complex
     vlen: chans
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [656, 220.0]
+    coordinate: [784, 180.0]
     rotation: 0
     state: true
-- name: blocks_repeat_0_0
+- name: blocks_repeat_0_0_0
   id: blocks_repeat
   parameters:
     affinity: ''
     alias: ''
-    comment: ''
+    comment: To improve latency
     interp: '40'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -132,10 +289,263 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [656, 292.0]
+    coordinate: [792, 396.0]
+    rotation: 0
+    state: true
+- name: blocks_stream_to_vector_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '64'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1744, 152.0]
+    rotation: 0
+    state: true
+- name: blocks_vector_to_stream_0
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: chans
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [992, 232.0]
+    rotation: 0
+    state: true
+- name: blocks_vector_to_stream_1
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: chans
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 152.0]
+    rotation: 0
+    state: true
+- name: fft_vxx_0
+  id: fft_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fft_size: chans
+    forward: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nthreads: '1'
+    shift: 'False'
+    type: complex
+    window: '[1.0,]*chans'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 156.0]
+    rotation: 0
+    state: enabled
+- name: import_1
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy as np
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 12.0]
+    rotation: 0
+    state: true
+- name: qtgui_const_sink_x_0
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"red"'
+    color2: '"red"'
+    color3: '"red"'
+    color4: '"red"'
+    color5: '"red"'
+    color6: '"red"'
+    color7: '"red"'
+    color8: '"red"'
+    color9: '"red"'
+    comment: Polar plot of the Fringe
+    grid: 'True'
+    gui_hint: 0,0,2,1
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '""'
+    nconnections: '1'
+    size: chans*4
+    style1: '1'
+    style10: '0'
+    style2: '1'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '1500'
+    xmin: '-1500'
+    ymax: '1500'
+    ymin: '-1500'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 220.0]
     rotation: 0
     state: true
 - name: qtgui_vector_sink_f_0
+  id: qtgui_vector_sink_f
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '1.0'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: Zoom view on Fringe
+    grid: 'True'
+    gui_hint: 0,1,1,1
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: FX Xcorr on ATA - CasA 1350 MHz 50MS/s
+    nconnections: '1'
+    ref_level: '0'
+    showports: 'False'
+    update_time: '0.10'
+    vlen: '64'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_axis_label: '"Offset (samples)"'
+    x_start: '-32'
+    x_step: '1'
+    x_units: '"bins"'
+    y_axis_label: Fringe Amplitude
+    y_units: '""'
+    ymax: 5e10
+    ymin: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1912, 84.0]
+    rotation: 0
+    state: true
+- name: qtgui_vector_sink_f_0_0
   id: qtgui_vector_sink_f
   parameters:
     affinity: ''
@@ -162,9 +572,9 @@ blocks:
     color7: '"yellow"'
     color8: '"dark red"'
     color9: '"dark green"'
-    comment: ''
-    grid: 'True'
-    gui_hint: ''
+    comment: Phase vs Frequency
+    grid: 'False'
+    gui_hint: 1,1,1,1
     label1: ''
     label10: ''
     label2: ''
@@ -177,8 +587,8 @@ blocks:
     label9: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: FX Xcorr on ATA - CasA 1350 MHz
-    nconnections: '2'
+    name: FX Xcorr on ATA - CasA 1350 MHz 50MS/s
+    nconnections: '1'
     ref_level: '0'
     showports: 'False'
     update_time: '0.10'
@@ -193,19 +603,19 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    x_axis_label: '"Offset (samples)"'
-    x_start: '0'
-    x_step: '1'
+    x_axis_label: Frequency (MHz)
+    x_start: 1350 - samp_rate/2e6
+    x_step: samp_rate/chans/1e6
     x_units: '"bins"'
-    y_axis_label: '"y-Axis"'
+    y_axis_label: Phase (rad)
     y_units: '""'
-    ymax: 5e10
-    ymin: '0'
+    ymax: '4'
+    ymin: '-4'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [856, 204.0]
+    coordinate: [968, 340.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -222,7 +632,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 12.0]
+    coordinate: [168, 12.0]
     rotation: 0
     state: enabled
 - name: zeromq_sub_source_0
@@ -237,24 +647,35 @@ blocks:
     minoutbuf: '0'
     pass_tags: 'False'
     timeout: '100'
-    type: float
+    type: complex
     vlen: chans
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [64, 244.0]
+    coordinate: [24, 268.0]
     rotation: 0
     state: true
 
 connections:
-- [blocks_deinterleave_0, '0', blocks_integrate_xx_0_0, '0']
-- [blocks_deinterleave_0, '1', blocks_integrate_xx_0, '0']
-- [blocks_integrate_xx_0, '0', blocks_repeat_0_0, '0']
+- [blocks_complex_to_arg_0_0, '0', blocks_repeat_0_0_0, '0']
+- [blocks_complex_to_mag_0, '0', blocks_vector_to_stream_1, '0']
+- [blocks_deinterleave_1, '0', blocks_interleave_0, '1']
+- [blocks_deinterleave_1, '1', blocks_interleave_0, '0']
 - [blocks_integrate_xx_0_0, '0', blocks_repeat_0, '0']
-- [blocks_repeat_0, '0', qtgui_vector_sink_f_0, '0']
-- [blocks_repeat_0_0, '0', qtgui_vector_sink_f_0, '1']
-- [zeromq_sub_source_0, '0', blocks_deinterleave_0, '0']
+- [blocks_integrate_xx_0_0_0_0_0, '0', blocks_complex_to_arg_0_0, '0']
+- [blocks_interleave_0, '0', blocks_keep_m_in_n_0, '0']
+- [blocks_keep_m_in_n_0, '0', blocks_stream_to_vector_0, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_integrate_xx_0_0_0_0_0, '0']
+- [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
+- [blocks_repeat_0, '0', blocks_complex_to_mag_0, '0']
+- [blocks_repeat_0, '0', blocks_vector_to_stream_0, '0']
+- [blocks_repeat_0_0_0, '0', qtgui_vector_sink_f_0_0, '0']
+- [blocks_stream_to_vector_0, '0', qtgui_vector_sink_f_0, '0']
+- [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
+- [blocks_vector_to_stream_1, '0', blocks_deinterleave_1, '0']
+- [fft_vxx_0, '0', blocks_integrate_xx_0_0, '0']
+- [zeromq_sub_source_0, '0', blocks_multiply_const_vxx_0, '0']
 
 metadata:
   file_format: 1
