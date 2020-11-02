@@ -17,7 +17,7 @@ of several minutes. The output product is a cross-spectrum with a configurable i
 The result can both be written to file, and viewed in realtime.
 The realtime display shows the fringe peak (in the lag domain) and the phase over the frequency bins.
 
-![ATA-FX Flowchart](FX-ATA-screenshot.png)
+![ATA-FX Flowchart](ATA-FX-screenshot.png)
 
 ## Results
 
