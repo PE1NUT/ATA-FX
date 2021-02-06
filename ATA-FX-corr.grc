@@ -18,7 +18,7 @@ options:
     realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
-    run_options: prompt
+    run_options: run
     sizing_mode: fixed
     thread_safe_setters: ''
     title: ATA FX Correlator
@@ -49,13 +49,13 @@ blocks:
   parameters:
     comment: 'Baseline delay, in seconds.
 
-      Gets updated by XMLRPC messages'
+      Gets updated by ZMQ messages'
     value: 9e-7
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [600, 68.0]
+    coordinate: [616, 4.0]
     rotation: 0
     state: true
 - name: delay_constant
@@ -84,6 +84,18 @@ blocks:
     coordinate: [1232, 4.0]
     rotation: 0
     state: true
+- name: fc
+  id: variable
+  parameters:
+    comment: ''
+    value: 512e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 4.0]
+    rotation: 0
+    state: true
 - name: fractional_delay
   id: variable
   parameters:
@@ -95,7 +107,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 4.0]
+    coordinate: [696, 4.0]
     rotation: 0
     state: enabled
 - name: integer_delay
@@ -107,7 +119,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [864, 4.0]
+    coordinate: [848, 4.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -122,6 +134,38 @@ blocks:
     coordinate: [1072, 4.0]
     rotation: 0
     state: enabled
+- name: blocks_complex_to_mag_0
+  id: blocks_complex_to_mag
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [968, 396.0]
+    rotation: 0
+    state: true
+- name: blocks_complex_to_mag_0_0
+  id: blocks_complex_to_mag
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [968, 444.0]
+    rotation: 0
+    state: true
 - name: blocks_delay_0
   id: blocks_delay
   parameters:
@@ -138,7 +182,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 228.0]
+    coordinate: [448, 228.0]
     rotation: 0
     state: true
 - name: blocks_delay_1
@@ -157,7 +201,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 340.0]
+    coordinate: [448, 340.0]
     rotation: 0
     state: true
 - name: blocks_file_sink_0
@@ -167,8 +211,8 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: '''CasA-''+str(int(samp_rate/1e5)/10)+''MSps-fringe-''+str(chans)+''bins-IQ-float
-      ''+timestamp'
+    file: source+'-'+str(int(samp_rate/1e5)/10)+'MSps-fringe+auto-'+str(chans)+'bins-IQ-float
+      '+timestamp
     type: complex
     unbuffered: 'False'
     vlen: chans
@@ -176,9 +220,61 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1368, 244.0]
+    coordinate: [1688, 300.0]
     rotation: 0
     state: enabled
+- name: blocks_float_to_complex_0
+  id: blocks_float_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1160, 408.0]
+    rotation: 0
+    state: true
+- name: blocks_head_0
+  id: blocks_head
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: int(record * samp_rate)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 228.0]
+    rotation: 0
+    state: true
+- name: blocks_head_0_0
+  id: blocks_head
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: int(record * samp_rate)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 340.0]
+    rotation: 0
+    state: true
 - name: blocks_integrate_xx_0_0
   id: blocks_integrate_xx
   parameters:
@@ -194,7 +290,44 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1192, 316.0]
+    coordinate: [1328, 316.0]
+    rotation: 0
+    state: true
+- name: blocks_integrate_xx_0_0_0
+  id: blocks_integrate_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: int(samp_rate/10000)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1328, 412.0]
+    rotation: 0
+    state: true
+- name: blocks_interleave_0
+  id: blocks_interleave
+  parameters:
+    affinity: ''
+    alias: ''
+    blocksize: '1'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1504, 360.0]
     rotation: 0
     state: true
 - name: blocks_multiply_conjugate_cc_0_0
@@ -210,7 +343,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 312.0]
+    coordinate: [1160, 312.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0_0
@@ -231,7 +364,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [784, 220.0]
+    coordinate: [936, 220.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_0
@@ -249,7 +382,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 232.0]
+    coordinate: [568, 232.0]
     rotation: 0
     state: true
 - name: blocks_stream_to_vector_0_0
@@ -267,26 +400,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 344.0]
+    coordinate: [576, 344.0]
     rotation: 0
     state: true
-- name: fc
-  id: parameter
-  parameters:
-    alias: ''
-    comment: ''
-    hide: none
-    label: carrier frequency
-    short_id: c
-    type: eng_float
-    value: 512e6
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [160, 4.0]
-    rotation: 0
-    state: enabled
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -300,12 +416,12 @@ blocks:
     nthreads: '1'
     shift: 'True'
     type: complex
-    window: '[1.0,]*chans'
+    window: '[]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 196.0]
+    coordinate: [728, 196.0]
     rotation: 0
     state: true
 - name: fft_vxx_0_0
@@ -321,12 +437,12 @@ blocks:
     nthreads: '1'
     shift: 'True'
     type: complex
-    window: '[1.0,]*chans'
+    window: '[]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 308.0]
+    coordinate: [728, 308.0]
     rotation: 0
     state: true
 - name: gaindB
@@ -346,6 +462,20 @@ blocks:
     coordinate: [296, 4.0]
     rotation: 0
     state: enabled
+- name: gpredict_MsgPairToVar_0
+  id: gpredict_MsgPairToVar
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    target: delay
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [936, 124.0]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -370,6 +500,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1320, 4.0]
+    rotation: 0
+    state: true
+- name: record
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Recording Length (s)
+    short_id: ''
+    type: intx
+    value: '60'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1712, 4.0]
     rotation: 0
     state: true
 - name: snippet_0
@@ -397,6 +544,23 @@ blocks:
     coordinate: [1392, 4.0]
     rotation: 0
     state: enabled
+- name: source
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Source Name
+    short_id: ''
+    type: str
+    value: '''CasA'''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1592, 4.0]
+    rotation: 0
+    state: true
 - name: timestamp
   id: parameter
   parameters:
@@ -557,7 +721,7 @@ blocks:
     dc_offs_enb7: '""'
     dc_offs_enb8: '""'
     dc_offs_enb9: '""'
-    dev_addr: '"addr0=10.11.2.61, addr1=10.11.2.71"'
+    dev_addr: '"addr0=10.11.1.50, addr1=10.11.1.52"'
     dev_args: '"master_clock_rate=200e6"'
     gain0: gaindB
     gain1: gaindB
@@ -785,20 +949,6 @@ blocks:
     coordinate: [8, 132.0]
     rotation: 0
     state: enabled
-- name: xmlrpc_server_0
-  id: xmlrpc_server
-  parameters:
-    addr: localhost
-    alias: ''
-    comment: ''
-    port: '8080'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [600, 4.0]
-    rotation: 0
-    state: true
 - name: zeromq_pub_sink_0
   id: zeromq_pub_sink
   parameters:
@@ -815,23 +965,51 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1368, 348.0]
+    coordinate: [1688, 404.0]
     rotation: 0
     state: enabled
+- name: zeromq_sub_msg_source_0
+  id: zeromq_sub_msg_source
+  parameters:
+    address: tcp://localhost:50001
+    affinity: ''
+    alias: ''
+    bind: 'False'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    timeout: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [728, 116.0]
+    rotation: 0
+    state: true
 
 connections:
+- [blocks_complex_to_mag_0, '0', blocks_float_to_complex_0, '0']
+- [blocks_complex_to_mag_0_0, '0', blocks_float_to_complex_0, '1']
 - [blocks_delay_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_delay_1, '0', blocks_stream_to_vector_0_0, '0']
-- [blocks_integrate_xx_0_0, '0', blocks_file_sink_0, '0']
-- [blocks_integrate_xx_0_0, '0', zeromq_pub_sink_0, '0']
+- [blocks_float_to_complex_0, '0', blocks_integrate_xx_0_0_0, '0']
+- [blocks_head_0, '0', blocks_delay_0, '0']
+- [blocks_head_0_0, '0', blocks_delay_1, '0']
+- [blocks_integrate_xx_0_0, '0', blocks_interleave_0, '0']
+- [blocks_integrate_xx_0_0_0, '0', blocks_interleave_0, '1']
+- [blocks_interleave_0, '0', blocks_file_sink_0, '0']
+- [blocks_interleave_0, '0', zeromq_pub_sink_0, '0']
 - [blocks_multiply_conjugate_cc_0_0, '0', blocks_integrate_xx_0_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', blocks_multiply_conjugate_cc_0_0, '0']
 - [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
 - [blocks_stream_to_vector_0_0, '0', fft_vxx_0_0, '0']
+- [fft_vxx_0, '0', blocks_complex_to_mag_0, '0']
 - [fft_vxx_0, '0', blocks_multiply_const_vxx_0_0, '0']
+- [fft_vxx_0_0, '0', blocks_complex_to_mag_0_0, '0']
 - [fft_vxx_0_0, '0', blocks_multiply_conjugate_cc_0_0, '1']
-- [uhd_usrp_source, '0', blocks_delay_0, '0']
-- [uhd_usrp_source, '1', blocks_delay_1, '0']
+- [uhd_usrp_source, '0', blocks_head_0, '0']
+- [uhd_usrp_source, '1', blocks_head_0_0, '0']
+- [zeromq_sub_msg_source_0, out, gpredict_MsgPairToVar_0, inpair]
 
 metadata:
   file_format: 1

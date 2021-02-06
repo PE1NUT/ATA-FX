@@ -44,6 +44,18 @@ blocks:
     coordinate: [304, 76.0]
     rotation: 0
     state: enabled
+- name: f_cent
+  id: variable
+  parameters:
+    comment: ''
+    value: '1370'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [872, 4.0]
+    rotation: 0
+    state: true
 - name: frac_delay
   id: variable
   parameters:
@@ -54,14 +66,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 12.0]
+    coordinate: [648, 12.0]
     rotation: 0
     state: enabled
 - name: integration
   id: variable
   parameters:
     comment: ''
-    value: '500'
+    value: '20'
   states:
     bus_sink: false
     bus_source: false
@@ -87,7 +99,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [488, 12.0]
+    coordinate: [520, 12.0]
     rotation: 0
     state: true
 - name: phase_slope
@@ -99,9 +111,9 @@ blocks:
     min_len: '200'
     orient: Qt.Horizontal
     rangeType: float
-    start: '-20'
+    start: '-40'
     step: '0.01'
-    stop: '20'
+    stop: '40'
     value: '0'
     widget: counter_slider
   states:
@@ -111,8 +123,8 @@ blocks:
     coordinate: [392, 12.0]
     rotation: 0
     state: true
-- name: blocks_complex_to_arg_0_0
-  id: blocks_complex_to_arg
+- name: blocks_complex_to_float_0
+  id: blocks_complex_to_float
   parameters:
     affinity: ''
     alias: ''
@@ -124,7 +136,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [632, 404.0]
+    coordinate: [600, 680.0]
     rotation: 0
     state: true
 - name: blocks_complex_to_mag_0
@@ -141,6 +153,41 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [992, 148.0]
+    rotation: 0
+    state: true
+- name: blocks_complex_to_magphase_0
+  id: blocks_complex_to_magphase
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '512'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [592, 424.0]
+    rotation: 0
+    state: true
+- name: blocks_deinterleave_0
+  id: blocks_deinterleave
+  parameters:
+    affinity: ''
+    alias: ''
+    blocksize: '1'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [136, 448.0]
     rotation: 0
     state: true
 - name: blocks_deinterleave_1
@@ -162,6 +209,47 @@ blocks:
     coordinate: [1296, 136.0]
     rotation: 0
     state: true
+- name: blocks_divide_xx_0
+  id: blocks_divide_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: float
+    vlen: '512'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [840, 320.0]
+    rotation: 0
+    state: true
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/paul/ATA/ATA-FX/2020-11-07/3C286-4g-1h-50.0MSps-fringe-512bins-IQ-float
+      2020-11-08 22:15:02.084565
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 140.0]
+    rotation: 0
+    state: disabled
 - name: blocks_integrate_xx_0_0
   id: blocks_integrate_xx
   parameters:
@@ -195,7 +283,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [440, 396.0]
+    coordinate: [440, 428.0]
+    rotation: 0
+    state: enabled
+- name: blocks_integrate_xx_0_0_0_0_0_0
+  id: blocks_integrate_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: integration
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [448, 684.0]
     rotation: 0
     state: enabled
 - name: blocks_interleave_0
@@ -223,11 +329,11 @@ blocks:
     affinity: ''
     alias: ''
     comment: Zoom in on fringe location
-    m: '64'
+    m: '128'
     maxoutbuf: '0'
     minoutbuf: '0'
     n: chans
-    offset: int(chans/2)-32
+    offset: int(chans/2)-64
     type: float
   states:
     bus_sink: false
@@ -256,6 +362,42 @@ blocks:
     coordinate: [240, 284.0]
     rotation: 0
     state: enabled
+- name: blocks_multiply_const_vxx_1
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '[1e9,]*512'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '512'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 340.0]
+    rotation: 0
+    state: true
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: float
+    vlen: '512'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 424.0]
+    rotation: 0
+    state: true
 - name: blocks_repeat_0
   id: blocks_repeat
   parameters:
@@ -289,7 +431,61 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [792, 396.0]
+    coordinate: [808, 508.0]
+    rotation: 0
+    state: true
+- name: blocks_repeat_0_0_0_0
+  id: blocks_repeat
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: To improve latency
+    interp: '40'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [800, 732.0]
+    rotation: 0
+    state: true
+- name: blocks_repeat_0_0_0_0_0
+  id: blocks_repeat
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: To improve latency
+    interp: '40'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [800, 628.0]
+    rotation: 0
+    state: true
+- name: blocks_repeat_0_0_0_0_1
+  id: blocks_repeat
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: To improve latency
+    interp: '40'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1304, 340.0]
     rotation: 0
     state: true
 - name: blocks_stream_to_vector_0
@@ -300,7 +496,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: '64'
+    num_items: '128'
     type: float
     vlen: '1'
   states:
@@ -310,6 +506,25 @@ blocks:
     coordinate: [1744, 152.0]
     rotation: 0
     state: true
+- name: blocks_throttle_0
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate/5000/chans
+    type: complex
+    vlen: chans
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 172.0]
+    rotation: 0
+    state: disabled
 - name: blocks_vector_to_stream_0
   id: blocks_vector_to_stream
   parameters:
@@ -359,7 +574,7 @@ blocks:
     nthreads: '1'
     shift: 'False'
     type: complex
-    window: '[1.0,]*chans'
+    window: '[]'
   states:
     bus_sink: false
     bus_source: false
@@ -377,7 +592,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 12.0]
+    coordinate: [800, 12.0]
     rotation: 0
     state: true
 - name: qtgui_const_sink_x_0
@@ -519,7 +734,7 @@ blocks:
     ref_level: '0'
     showports: 'False'
     update_time: '0.10'
-    vlen: '64'
+    vlen: '128'
     width1: '1'
     width10: '1'
     width2: '1'
@@ -531,7 +746,7 @@ blocks:
     width8: '1'
     width9: '1'
     x_axis_label: '"Offset (samples)"'
-    x_start: '-32'
+    x_start: '-64'
     x_step: '1'
     x_units: '"bins"'
     y_axis_label: Fringe Amplitude
@@ -573,7 +788,7 @@ blocks:
     color8: '"dark red"'
     color9: '"dark green"'
     comment: Phase vs Frequency
-    grid: 'False'
+    grid: 'True'
     gui_hint: 1,1,1,1
     label1: ''
     label10: ''
@@ -604,18 +819,164 @@ blocks:
     width8: '1'
     width9: '1'
     x_axis_label: Frequency (MHz)
-    x_start: 1350 - samp_rate/2e6
+    x_start: f_cent - samp_rate/2e6
     x_step: samp_rate/chans/1e6
     x_units: '"bins"'
     y_axis_label: Phase (rad)
     y_units: '""'
-    ymax: '4'
-    ymin: '-4'
+    ymax: '3.2'
+    ymin: '-3.2'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 340.0]
+    coordinate: [984, 452.0]
+    rotation: 0
+    state: true
+- name: qtgui_vector_sink_f_1
+  id: qtgui_vector_sink_f
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '1.0'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: Input Amplitude
+    grid: 'True'
+    gui_hint: 0,2,1,1
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '2'
+    ref_level: '0'
+    showports: 'False'
+    update_time: '0.10'
+    vlen: chans
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_axis_label: '"x-Axis"'
+    x_start: f_cent - samp_rate/2e6
+    x_step: samp_rate/chans/1e6
+    x_units: '""'
+    y_axis_label: '"y-Axis"'
+    y_units: '""'
+    ymax: '10'
+    ymin: '00'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [984, 652.0]
+    rotation: 0
+    state: true
+- name: qtgui_vector_sink_f_1_0
+  id: qtgui_vector_sink_f
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '1.0'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: Correlated Amplitude
+    grid: 'True'
+    gui_hint: 1,2,1,1
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    ref_level: '0'
+    showports: 'False'
+    update_time: '0.10'
+    vlen: chans
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_axis_label: '"x-Axis"'
+    x_start: f_cent - samp_rate/2e6
+    x_step: samp_rate/chans/1e6
+    x_units: '""'
+    y_axis_label: '"y-Axis"'
+    y_units: '""'
+    ymax: '10'
+    ymin: '00'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1496, 308.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -655,27 +1016,43 @@ blocks:
     bus_structure: null
     coordinate: [24, 268.0]
     rotation: 0
-    state: true
+    state: enabled
 
 connections:
-- [blocks_complex_to_arg_0_0, '0', blocks_repeat_0_0_0, '0']
+- [blocks_complex_to_float_0, '0', blocks_multiply_xx_0, '0']
+- [blocks_complex_to_float_0, '0', blocks_repeat_0_0_0_0_0, '0']
+- [blocks_complex_to_float_0, '1', blocks_multiply_xx_0, '1']
+- [blocks_complex_to_float_0, '1', blocks_repeat_0_0_0_0, '0']
 - [blocks_complex_to_mag_0, '0', blocks_vector_to_stream_1, '0']
+- [blocks_complex_to_magphase_0, '0', blocks_divide_xx_0, '0']
+- [blocks_complex_to_magphase_0, '1', blocks_repeat_0_0_0, '0']
+- [blocks_deinterleave_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_deinterleave_0, '1', blocks_integrate_xx_0_0_0_0_0_0, '0']
 - [blocks_deinterleave_1, '0', blocks_interleave_0, '1']
 - [blocks_deinterleave_1, '1', blocks_interleave_0, '0']
+- [blocks_divide_xx_0, '0', blocks_multiply_const_vxx_1, '0']
+- [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_integrate_xx_0_0, '0', blocks_repeat_0, '0']
-- [blocks_integrate_xx_0_0_0_0_0, '0', blocks_complex_to_arg_0_0, '0']
+- [blocks_integrate_xx_0_0_0_0_0, '0', blocks_complex_to_magphase_0, '0']
+- [blocks_integrate_xx_0_0_0_0_0_0, '0', blocks_complex_to_float_0, '0']
 - [blocks_interleave_0, '0', blocks_keep_m_in_n_0, '0']
 - [blocks_keep_m_in_n_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_multiply_const_vxx_0, '0', blocks_integrate_xx_0_0_0_0_0, '0']
 - [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
+- [blocks_multiply_const_vxx_1, '0', blocks_repeat_0_0_0_0_1, '0']
+- [blocks_multiply_xx_0, '0', blocks_divide_xx_0, '1']
 - [blocks_repeat_0, '0', blocks_complex_to_mag_0, '0']
 - [blocks_repeat_0, '0', blocks_vector_to_stream_0, '0']
 - [blocks_repeat_0_0_0, '0', qtgui_vector_sink_f_0_0, '0']
+- [blocks_repeat_0_0_0_0, '0', qtgui_vector_sink_f_1, '1']
+- [blocks_repeat_0_0_0_0_0, '0', qtgui_vector_sink_f_1, '0']
+- [blocks_repeat_0_0_0_0_1, '0', qtgui_vector_sink_f_1_0, '0']
 - [blocks_stream_to_vector_0, '0', qtgui_vector_sink_f_0, '0']
+- [blocks_throttle_0, '0', blocks_multiply_const_vxx_0, '0']
 - [blocks_vector_to_stream_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_vector_to_stream_1, '0', blocks_deinterleave_1, '0']
 - [fft_vxx_0, '0', blocks_integrate_xx_0_0, '0']
-- [zeromq_sub_source_0, '0', blocks_multiply_const_vxx_0, '0']
+- [zeromq_sub_source_0, '0', blocks_deinterleave_0, '0']
 
 metadata:
   file_format: 1

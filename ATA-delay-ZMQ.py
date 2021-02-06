@@ -16,9 +16,13 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord, EarthLocation
 from astropy.constants import c
 import time
-from xmlrpc.client import ServerProxy
+import pmt
+import zmq
+import sys
 
-xmlrpc_client = ServerProxy('http://localhost:8080')
+context = zmq.Context()
+socket = context.socket(zmq.PUB)
+socket.bind("tcp://127.0.0.1:50001")
 
 # Note: These coordinates are not official, but from clicking on Google Maps.
 ant1a = EarthLocation.from_geodetic(lat = 40.816695 * u.deg, \
@@ -35,13 +39,16 @@ baseline = EarthLocation(ant1a.x - ant4g.x, ant1a.y - ant4g.y, ant1a.z - ant4g.z
 # Note: this number is still being refined, and depends on the baseline.
 fixed_delay = -(195 * u.m / c).to(u.s)
 
-source = SkyCoord(ra = sys.argv[1] * u.deg, dec = sys.argv[2] * u.deg)
+source = SkyCoord(ra = float(sys.argv[1]) * u.deg,
+                 dec = float(sys.argv[2]) * u.deg)
 
 while True:
     obstime = Time.now()
-    baseline_projected = 
+    baseline_projected = \
         baseline.get_gcrs(obstime).cartesian.xyz.T.dot(source.cartesian.xyz)
     delay = baseline_projected / c + fixed_delay
     print(delay)
-    xmlrpc_client.set_delay(float(delay.value))
+    msg = pmt.cons(pmt.intern("delay"), pmt.from_double(delay.value))
+    sb = pmt.serialize_str(msg)
+    socket.send(sb)
     time.sleep(0.5)
