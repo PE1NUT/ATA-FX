@@ -35,7 +35,7 @@ baseline = EarthLocation(ant1a.x - ant4g.x, ant1a.y - ant4g.y, ant1a.z - ant4g.z
 # Note: this number is still being refined, and depends on the baseline.
 fixed_delay = -(195 * u.m / c).to(u.s)
 
-source = SkyCoord.from_name('Cas A')
+source = SkyCoord(ra = sys.argv[1] * u.deg, dec = sys.argv[2] * u.deg)
 
 while True:
     obstime = Time.now()
