@@ -8,8 +8,7 @@
 
 # This software is (c) Paul Boven, licensed under GPLv3.
 
-# TODO: Should take as parameters the antenna names or positions, and fixed delays to
-# a reference antenne, and the source position.
+# TODO: Swap sign of delay etc when baseline is the other way around
 
 from astropy import units as u
 from astropy.time import Time
@@ -29,25 +28,44 @@ ant1a = EarthLocation.from_geodetic(lat = 40.816695 * u.deg, \
                                     lon = -121.471042 * u.deg, \
                                     height = 986 * u.m)
 
+ant1c = EarthLocation.from_geodetic(lat = 40.815967 * u.deg, \
+                                    lon = -121.470725 * u.deg, \
+                                    height = 986 * u.m)
+
+ant1h = EarthLocation.from_geodetic(lat = 40.816410 * u.deg, \
+                                    lon = -121.471831 * u.deg, \
+                                    height = 986 * u.m)
+
 ant4g = EarthLocation.from_geodetic(lat = 40.8183207 * u.deg, \
                                     lon = -121.4704345 * u.deg, \
                                     height = 986 * u.m)
 
 # Unfortunately, EarthLocation doesn't override the - operator.
-baseline = EarthLocation(ant1a.x - ant4g.x, ant1a.y - ant4g.y, ant1a.z - ant4g.z)
+# These are corrections for fringe stopping on each baseline, which can't
+# readily be attributed to any antenna.
+baseline = {}
+baseline[('1a', '4g')] = EarthLocation(ant1a.x - ant4g.x -0.31*u.m, ant1a.y - ant4g.y + 0.12 *u.m, ant1a.z - ant4g.z + 0.38 * u.m)
+baseline[('1c', '4g')] = EarthLocation(ant1c.x - ant4g.x -1.038*u.m, ant1c.y - ant4g.y - 0.697 *u.m, ant1c.z - ant4g.z + 1.63 * u.m)
+baseline[('1h', '4g')] = EarthLocation(ant1h.x - ant4g.x -0.10*u.m, ant1h.y - ant4g.y + 0.009 *u.m, ant1h.z - ant4g.z + 0.42 * u.m)
+baseline[('2b', '4g')] = EarthLocation(39.922913 * u.m, 60.929134 * u.m, 83.856601 * u.m)
 
 # Note: this number is still being refined, and depends on the baseline.
-fixed_delay = -(195 * u.m / c).to(u.s)
+# NOte: it can jump by 100ns due to PPS/10MHz phase drift
+fixed_delay = {}
+fixed_delay[('1a', '4g')] = -750.8 *u.ns
+fixed_delay[('1c', '4g')] = -750.8 *u.ns - 147.2  * u.ns
+fixed_delay[('1h', '4g')] = -750.8 *u.ns + 26.6 * u.ns
+fixed_delay[('2b', '4g')] = 33.46 * 20 * u.ns
 
-source = SkyCoord(ra = float(sys.argv[1]) * u.deg,
-                 dec = float(sys.argv[2]) * u.deg)
+source = SkyCoord(ra = float(sys.argv[1]) * u.deg, dec = float(sys.argv[2]) * u.deg)
+anta = sys.argv[3]
+antb = sys.argv[4]
 
 while True:
     obstime = Time.now()
     baseline_projected = \
-        baseline.get_gcrs(obstime).cartesian.xyz.T.dot(source.cartesian.xyz)
-    delay = baseline_projected / c + fixed_delay
-    print(delay)
+        baseline[(antb, anta)].get_gcrs(obstime).cartesian.xyz.T.dot(source.cartesian.xyz)
+    delay = baseline_projected / c + fixed_delay[(antb, anta)]
     msg = pmt.cons(pmt.intern("delay"), pmt.from_double(delay.value))
     sb = pmt.serialize_str(msg)
     socket.send(sb)
