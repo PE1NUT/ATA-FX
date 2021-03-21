@@ -1,6 +1,7 @@
 options:
   parameters:
     author: Paul Boven
+    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -22,7 +23,6 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: ATA-FX Real Time Fringe Display
-    window_size: ''
   states:
     bus_sink: false
     bus_source: false
@@ -48,7 +48,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '1370'
+    value: '4900'
   states:
     bus_sink: false
     bus_source: false
@@ -88,7 +88,7 @@ blocks:
     gui_hint: ''
     label: ''
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '-4'
     step: '0.01'
@@ -109,7 +109,7 @@ blocks:
     gui_hint: ''
     label: ''
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '-40'
     step: '0.01'
@@ -168,7 +168,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [592, 424.0]
+    coordinate: [576, 416.0]
     rotation: 0
     state: true
 - name: blocks_deinterleave_0
@@ -368,7 +368,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: '[1e9,]*512'
+    const: '[1e7,]*512'
     maxoutbuf: '0'
     minoutbuf: '0'
     type: float
@@ -395,7 +395,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 424.0]
+    coordinate: [816, 432.0]
     rotation: 0
     state: true
 - name: blocks_repeat_0
@@ -646,7 +646,7 @@ blocks:
     marker7: '0'
     marker8: '0'
     marker9: '0'
-    name: '""'
+    name: Fringe Polar Plot
     nconnections: '1'
     size: chans*4
     style1: '1'
@@ -684,7 +684,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 220.0]
+    coordinate: [1184, 228.0]
     rotation: 0
     state: true
 - name: qtgui_vector_sink_f_0
@@ -729,7 +729,7 @@ blocks:
     label9: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: FX Xcorr on ATA - CasA 1350 MHz 50MS/s
+    name: ATA FX Xcorr - Fringe (lag domain)
     nconnections: '1'
     ref_level: '0'
     showports: 'False'
@@ -802,7 +802,7 @@ blocks:
     label9: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: FX Xcorr on ATA - CasA 1350 MHz 50MS/s
+    name: Fringe Phase
     nconnections: '1'
     ref_level: '0'
     showports: 'False'
@@ -875,7 +875,7 @@ blocks:
     label9: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: '""'
+    name: Auto Correlations
     nconnections: '2'
     ref_level: '0'
     showports: 'False'
@@ -948,7 +948,7 @@ blocks:
     label9: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: '""'
+    name: Cross Correlation
     nconnections: '1'
     ref_level: '0'
     showports: 'False'
@@ -970,8 +970,8 @@ blocks:
     x_units: '""'
     y_axis_label: '"y-Axis"'
     y_units: '""'
-    ymax: '10'
-    ymin: '00'
+    ymax: '1'
+    ymin: '0'
   states:
     bus_sink: false
     bus_source: false
@@ -1004,6 +1004,7 @@ blocks:
     alias: ''
     comment: ''
     hwm: '-1'
+    key: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     pass_tags: 'False'
