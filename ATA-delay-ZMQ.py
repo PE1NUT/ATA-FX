@@ -46,8 +46,8 @@ ant_a = sys.argv[3].lower()
 ant_b = sys.argv[4].lower()
 
 baseline = EarthLocation((ant_pos[ant_b][0] - ant_pos[ant_a][0]) * u.m,
-                         (ant_pos[ant_b][1] - ant_pos[ant_b][1]) * u.m,
-                         (ant_pos[ant_b][2] - ant_pos[ant_b][2]) * u.m)
+                         (ant_pos[ant_b][1] - ant_pos[ant_a][1]) * u.m,
+                         (ant_pos[ant_b][2] - ant_pos[ant_a][2]) * u.m)
 
 while True:
     obstime = Time.now()
